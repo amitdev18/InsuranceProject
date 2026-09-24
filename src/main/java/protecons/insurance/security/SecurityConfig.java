@@ -1,6 +1,7 @@
 package protecons.insurance.security;
 
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,6 +24,8 @@ public class SecurityConfig {
 
         this.jwtAuthenticationFilter =
                 jwtAuthenticationFilter;
+
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
     @Bean
@@ -46,10 +50,12 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-
-                        // =========================
-                        // PUBLIC AUTH APIs
-                        // =========================
+                        // Allow Async, Forward, Error dispatches
+                        .dispatcherTypeMatchers(
+                                DispatcherType.FORWARD,
+                                DispatcherType.ASYNC,
+                                DispatcherType.ERROR
+                        ).permitAll()
 
                         .requestMatchers(
                                 "/api/v1/auth/register"
@@ -66,15 +72,12 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-
                         // customer api
                         .requestMatchers(
                                 "/api/v1/customer"
                         ).permitAll()
 
-                        // =========================
                         // VEHICLE API
-                        // =========================
 
                         .requestMatchers(
                                 HttpMethod.GET,
@@ -89,12 +92,14 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/api/v1/lender/*"
+                                "/api/v1/lenders/**"
                         )
                         .hasAnyRole(
                                 "ADMIN",
                                 "INSURANCE_AGENT",
-                                "LENDER"
+                                "LENDER",
+                                "CUSTOMER",
+                                "SCARP_AGENT"
                         )
 
                         // Everything else requires authentication
@@ -102,40 +107,26 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()
                 )
-
-                // =========================
                 // JWT FILTER
-                // =========================
-
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 )
-
-                // =========================
                 // 401 / 403
-                // =========================
-
                 .exceptionHandling(exception -> exception
 
                         .authenticationEntryPoint(
-                                (request,
-                                 response,
-                                 authException) -> {
+                                (request, response, authException) -> {
 
-                                    response.setStatus(
-                                            HttpServletResponse
-                                                    .SC_UNAUTHORIZED
+                                    // Print the exact exception in console to debug 401 errors
+                                    System.err.println("=== 401 UNAUTHORIZED TRIGGERED ===");
+                                    authException.printStackTrace();
+
+                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                    response.setContentType("application/json");
+                                    response.getWriter().write(
+                                            "{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}"
                                     );
-
-                                    response.setContentType(
-                                            "application/json"
-                                    );
-
-                                    response.getWriter()
-                                            .write(
-                                                    "{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}"
-                                            );
                                 }
                         )
 

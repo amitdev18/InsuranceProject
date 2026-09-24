@@ -130,6 +130,11 @@
       <artifactId>camel-jackson-starter</artifactId>
     </dependency>
 
+
+      <dependency>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-jsr310</artifactId>
+      </dependency>
     <!-- for the Data Base dependency -->
 
     <dependency>
