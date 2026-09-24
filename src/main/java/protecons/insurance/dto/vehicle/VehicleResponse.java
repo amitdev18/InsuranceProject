@@ -4,6 +4,16 @@ public class VehicleResponse {
     private String vin;
 
     private String vehicleId;
+    private Integer year;
+    private String make;
+    private String model;
+    private String trim;
+    private String color;
+    private String vehicleType;
+    private Boolean totalLoss;
+    private String lenderId;
+    private String titleStatus;
+    private String registrationState;
 
     public String getVin() {
         return vin;
@@ -100,22 +110,5 @@ public class VehicleResponse {
     public void setRegistrationState(String registrationState) {
         this.registrationState = registrationState;
     }
-
-    private Integer year;
-
-    private String make;
-
-    private String model;
-
-    private String trim;
-
-    private String color;
-
-    private String vehicleType;
-
-    private Boolean totalLoss;
-    private String lenderId;
-    private String titleStatus;
-    private String registrationState;
 
 }

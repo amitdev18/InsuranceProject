@@ -5,7 +5,8 @@ import protecons.insurance.entity.Lender;
 
 import java.util.Optional;
 
-public interface LenderRepository extends JpaRepository<Lender,String> {
+public interface LenderRepository extends JpaRepository<Lender, String> {
     Optional<Lender> findByLenderId(String lenderId);
+
 
 }

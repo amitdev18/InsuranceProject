@@ -1,7 +1,7 @@
 package protecons.insurance.route;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.stereotype.Component;
 import protecons.insurance.dto.lender.LenderResponse;
 
@@ -10,16 +10,30 @@ public class LenderRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+        onException(Exception.class)
+                .handled(false)
+                .process(exchange -> {
+                    Exception cause = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+                    System.err.println("CAMEL ROUTE EXCEPTION");
+                    if (cause != null) {
+                        cause.printStackTrace();
+                    } else {
+                        System.err.println("No exception object found on exchange.");
+                    }
+                    System.err.println("===========");
+                });
+
+
         rest("/api/v1/lenders")
                 .get("/{lenderId}")
                 .description("get lender details by lender id")
                 .param()
-                  .name("lenderId")
-                  .required(true)
+                .name("lenderId")
+                .required(true)
                 .endParam()
-                .bindingMode(RestBindingMode.json)
                 .produces("application/json")
                 .outType(LenderResponse.class)
+                .security("bearerAuth")
                 .to("direct:lender");
 
 

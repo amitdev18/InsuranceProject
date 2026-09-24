@@ -1,6 +1,6 @@
 package protecons.insurance.dto.lender;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,21 +9,42 @@ public class LenderResponse {
     private String lenderId;
 
     private String lenderName;
-    private String getLenderAccountNumber;
+    private String lenderAccountNumber;
     private String loanStatus;
     private BigDecimal originalLoanAmount;
-    private BigDecimal remainingAmount;
+    private BigDecimal remainingPrincipal;
     private BigDecimal payoffAmount;
 
     private BigDecimal monthlyEmi;
 
     private Integer emisPaid;
 
-    private Integer totalEmi;
+    private Integer totalEmis;
 
     private String lastPaymentId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate lastPaymentDate;
+    private String currency;
+
+    public LenderResponse(String lenderId, String lenderName, String lenderAccountNumber, String loanStatus, BigDecimal originalLoanAmount, BigDecimal remainingPrincipal, BigDecimal payoffAmount, BigDecimal monthlyEmi, Integer emisPaid, Integer totalEmis, String lastPaymentId, LocalDate lastPaymentDate, String currency) {
+        this.lenderId = lenderId;
+        this.lenderName = lenderName;
+        this.lenderAccountNumber = lenderAccountNumber;
+        this.loanStatus = loanStatus;
+        this.originalLoanAmount = originalLoanAmount;
+        this.remainingPrincipal = remainingPrincipal;
+        this.payoffAmount = payoffAmount;
+        this.monthlyEmi = monthlyEmi;
+        this.emisPaid = emisPaid;
+        this.totalEmis = totalEmis;
+        this.lastPaymentId = lastPaymentId;
+        this.lastPaymentDate = lastPaymentDate;
+        this.currency = currency;
+    }
+
+    public LenderResponse() {
+    }
 
     public String getLenderId() {
         return lenderId;
@@ -41,12 +62,12 @@ public class LenderResponse {
         this.lenderName = lenderName;
     }
 
-    public String getGetLenderAccountNumber() {
-        return getLenderAccountNumber;
+    public String getLenderAccountNumber() {
+        return lenderAccountNumber;
     }
 
-    public void setGetLenderAccountNumber(String getLenderAccountNumber) {
-        this.getLenderAccountNumber = getLenderAccountNumber;
+    public void setLenderAccountNumber(String lenderAccountNumber) {
+        this.lenderAccountNumber = lenderAccountNumber;
     }
 
     public String getLoanStatus() {
@@ -65,12 +86,12 @@ public class LenderResponse {
         this.originalLoanAmount = originalLoanAmount;
     }
 
-    public BigDecimal getRemainingAmount() {
-        return remainingAmount;
+    public BigDecimal getRemainingPrincipal() {
+        return remainingPrincipal;
     }
 
-    public void setRemainingAmount(BigDecimal remainingAmount) {
-        this.remainingAmount = remainingAmount;
+    public void setRemainingPrincipal(BigDecimal remainingPrincipal) {
+        this.remainingPrincipal = remainingPrincipal;
     }
 
     public BigDecimal getPayoffAmount() {
@@ -97,12 +118,12 @@ public class LenderResponse {
         this.emisPaid = emisPaid;
     }
 
-    public Integer getTotalEmi() {
-        return totalEmi;
+    public Integer getTotalEmis() {
+        return totalEmis;
     }
 
-    public void setTotalEmi(Integer totalEmi) {
-        this.totalEmi = totalEmi;
+    public void setTotalEmis(Integer totalEmis) {
+        this.totalEmis = totalEmis;
     }
 
     public String getLastPaymentId() {
@@ -128,7 +149,4 @@ public class LenderResponse {
     public void setCurrency(String currency) {
         this.currency = currency;
     }
-
-    private String currency;
-
 }

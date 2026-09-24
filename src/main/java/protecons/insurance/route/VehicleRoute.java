@@ -20,6 +20,7 @@ public class VehicleRoute extends RouteBuilder {
                 .produces("application/json")
                 .consumes("application/json")
                 .outType(VehicleResponse.class)
+                .security("bearerAuth")
                 .to("direct:vehicle");
 
         from("direct:vehicle")
